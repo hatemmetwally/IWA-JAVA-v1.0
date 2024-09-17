@@ -65,6 +65,9 @@ jobs:
       - name: Download Fortify on Demand Universal CI Tool
         uses: fortify/gha-setup-fod-uploader@v1
       - name: Perform SAST Scan
+        #https://github.com/fod-dev/fod-uploader-java
+        #Command Syntax
+        #FodUpload.jar -z <zip_file_path> -ep {1|SingleScanOnly|2|SubscriptionOnly|3|SingleScanFirstThenSubscription|4|SubscriptionFirstThenSingleScan} {-ac <key> <secret> | -uc <username> <password>} {-rid <release_id> | -bsi <token> | -at <assessment_id> -eid <entitlement_id> -ts <tstack_id> -l <lang_id> <-a {Manual|Automated} bs -os} -purl <domain_url> -aurl <api_url> -tc <tenant_id>  [-rp {0|RemediationScanIfAvailable|1|RemediationScanOnly|2|NonRemediationScanOnly}] [-pp {0|DoNotStartScan|1|CancelScanInProgress|2|Queue}] [-purchase] [-apf] [-n] [-I <minutes>] [-P <proxyUrl> <username> <password> <nt_domain> <nt_workstation>] [-h] [-v]
         run: java -jar $FOD_UPLOAD_JAR -z package.zip -aurl $FOD_API_URL -purl $FOD_URL -rid "$FOD_RELEASE_ID" -tc "$FOD_TENANT" -uc "$FOD_USER" "$FOD_PAT" $FOD_UPLOADER_OPTS -n "$FOD_UPLOADER_NOTES"
         env: 
           FOD_TENANT: ${{ secrets.FOD_TENANT }}  
@@ -73,7 +76,7 @@ jobs:
           FOD_RELEASE_ID: ${{ secrets.FOD_RELEASE_ID }}
           FOD_URL: "https://trial.fortify.com"
           FOD_API_URL: "https://api.trial.fortify.com"
-          FOD_UPLOADER_OPTS: "-ep 2 -pp 0 -I 1 -apf"
+          FOD_UPLOADER_OPTS: "-ep 1 -pp 0 -I 1 -apf"
           FOD_UPLOADER_NOTES: 'Triggered by GitHub Actions (${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})'
       
       # Once scan completes, pull SAST issues from Fortify on Demand and generate SARIF output.
